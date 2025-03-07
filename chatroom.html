@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Chatroom - Chat with Dianne</title>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.6.1/firebase-firestore.js"></script>
+    <script src="firebase-config.js"></script>
+</head>
+<body>
+    <h1>Chat with Dianne 💬</h1>
+    <div id="chatbox" style="border:1px solid pink; height:300px; overflow-y:scroll;"></div>
+    <input type="text" id="message" placeholder="Type your message">
+    <button onclick="sendMessage()">Send</button>
+
+    <script>
+        const app = firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        const bookingCode = sessionStorage.getItem('bookingCode');
+
+        const messagesRef = db.collection('chats').doc(bookingCode).collection('messages');
+
+        function loadMessages() {
+            messagesRef.orderBy('timestamp').onSnapshot(snapshot => {
+                const chatbox = document.getElementById('chatbox');
+                chatbox.innerHTML = '';
+                snapshot.forEach(doc => {
+                    const msg = doc.data();
+                    const p = document.createElement('p');
+                    p.innerText = `${msg.sender}: ${msg.text}`;
+                    chatbox.appendChild(p);
+                });
+            });
+        }
+
+        function sendMessage() {
+            const message = document.getElementById('message').value;
+            if (message) {
+                messagesRef.add({
+                    sender: 'Client',
+                    text: message,
+                    timestamp: firebase.firestore.FieldValue.serverTimestamp()
+                });
+                document.getElementById('message').value = '';
+            }
+        }
+
+        loadMessages();
+    </script>
+</body>
+</html>
