@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>Login - Chat with Dianne</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Client Login</h1>
+    <form onsubmit="loginUser(event)">
+        <label>Email:</label>
+        <input type="email" id="email" required><br><br>
+        <label>Booking Code:</label>
+        <input type="text" id="bookingCode" required><br><br>
+        <button type="submit">Login</button>
+    </form>
+
+    <script>
+        function loginUser(event) {
+            event.preventDefault();
+            const email = document.getElementById('email').value;
+            const code = document.getElementById('bookingCode').value;
+            sessionStorage.setItem('email', email);
+            sessionStorage.setItem('bookingCode', code);
+            window.location.href = 'chatroom.html';
+        }
+    </script>
+</body>
+</html>
